@@ -1,0 +1,142 @@
+# OpenAPI version identifier - required for OpenAPI 3.0 domains
+openapi: 3.0.0
+
+#######################
+# Optional info section
+#######################
+info:
+  title: Components
+  description: Common components for Acme REST APIs
+  version: '1.0.0'
+
+components:
+  schemas:
+    # Vehicle Schema (Polymorphic base schema)
+    Vehicle:
+      type: object
+      description: A vehicle object(Jack) that can either be a car or a motorcycle
+      oneOf:
+        - $ref: '#/components/schemas/Car'
+        - $ref: '#/components/schemas/Motorcycle'
+      discriminator:
+        propertyName: type
+        mapping:
+          car: '#/components/schemas/Car'
+          motorcycle: '#/components/schemas/Motorcycle'
+
+    # Car Schema
+    Car:
+      type: object
+      description: A car object with details about make, model, and year
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the car
+        type:
+          type: string
+          description: The type of vehicle
+          enum: [car]
+        make:
+          type: string
+          description: The car's manufacturer
+        model:
+          type: string
+          description: The car's model
+        year:
+          type: integer
+          description: The year the car was manufactured
+      required:
+        - id
+        - type
+        - make
+        - model
+        - year
+
+    # Motorcycle Schema
+    Motorcycle:
+      type: object
+      description: A motorcycle object with details about make, model, and engine displacement
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the motorcycle
+        type:
+          type: string
+          description: The type of vehicle
+          enum: [motorcycle]
+        make:
+          type: string
+          description: The motorcycle's manufacturer
+        model:
+          type: string
+          description: The motorcycle's model
+        cc:
+          type: integer
+          description: Engine displacement in cubic centimeters
+      required:
+        - id
+        - type
+        - make
+        - model
+        - cc
+
+    # Schema for creating new vehicle (polymorphic schema)
+    NewVehicle:
+      type: object
+      description: Schema for adding a new vehicle, can be either a new car or a new motorcycle
+      oneOf:
+        - $ref: '#/components/schemas/NewCar'
+        - $ref: '#/components/schemas/NewMotorcycle'
+      discriminator:
+        propertyName: type
+        mapping:
+          car: '#/components/schemas/NewCar'
+          motorcycle: '#/components/schemas/NewMotorcycle'
+
+    # Schema for creating a new car
+    NewCar:
+      type: object
+      description: Schema for adding a new car
+      properties:
+        type:
+          type: string
+          description: The type of vehicle (car)
+          enum: [car]
+        make:
+          type: string
+          description: The car's manufacturer
+        model:
+          type: string
+          description: The car's model
+        year:
+          type: integer
+          description: The year the car was manufactured
+      required:
+        - type
+        - make
+        - model
+        - year
+
+    # Schema for creating a new motorcycle
+    NewMotorcycle:
+      type: object
+      description: Schema for adding a new motorcycle
+      properties:
+        type:
+          type: string
+          description: The type of vehicle (motorcycle)
+          enum: [motorcycle]
+        make:
+          type: string
+          description: The motorcycle's manufacturer
+        model:
+          type: string
+          description: The motorcycle's model
+        cc:
+          type: integer
+          description: Engine displacement in cubic centimeters
+      required:
+        - type
+        - make
+        - model
+        - cc
