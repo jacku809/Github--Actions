@@ -1,0 +1,217 @@
+openapi: 3.0.0
+info:
+  title: Vehicle API
+  description: API for managing a collection of vehicles
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Sample_testin/alloftesting-API/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://virtserver.swaggerhub.com
+paths:
+  /vehicles:
+    get:
+      summary: Retrieve a list of vehicles
+      parameters:
+      - name: type
+        in: query
+        description: "Filter vehicles by type (car, motorcycle)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - car
+          - motorcycle
+      - name: make
+        in: query
+        description: "Filter vehicles by make (e.g., Toyota, Honda)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: model
+        in: query
+        description: Filter vehicles by model
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        description: Filter vehicles by year
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+    post:
+      summary: Add a new vehicle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVehicle'
+        required: true
+      responses:
+        "201":
+          description: Vehicle created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+  /vehicles/{vehicleId}:
+    get:
+      summary: Retrieve a specific vehicle by ID
+      parameters:
+      - name: vehicleId
+        in: path
+        description: The ID of the vehicle
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A single vehicle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        "404":
+          description: Vehicle not found
+components:
+  schemas:
+    Vehicle:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/Motorcycle_1'
+      - $ref: '#/components/schemas/Car_1'
+    Car:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - car
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+    Motorcycle:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - motorcycle
+        make:
+          type: string
+        model:
+          type: string
+        cc:
+          type: integer
+          description: Engine displacement in cubic centimeters
+    NewVehicle:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/NewCar'
+      - $ref: '#/components/schemas/NewMotorcycle'
+    NewCar:
+      required:
+      - make
+      - model
+      - year
+      type: object
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+    NewMotorcycle:
+      required:
+      - cc
+      - make
+      - model
+      type: object
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        cc:
+          type: integer
+    Motorcycle_1:
+      required:
+      - cc
+      - id
+      - make
+      - model
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the motorcycle
+        type:
+          type: string
+          description: The type of vehicle
+          enum:
+          - motorcycle
+        make:
+          type: string
+          description: The motorcycle's manufacturer
+        model:
+          type: string
+          description: The motorcycle's model
+        cc:
+          type: integer
+          description: Engine displacement in cubic centimeters
+      description: "A motorcycle object with details about make, model, and engine displacement"
+    Car_1:
+      required:
+      - id
+      - make
+      - model
+      - type
+      - year
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the car
+        type:
+          type: string
+          description: The type of vehicle
+          enum:
+          - car
+        make:
+          type: string
+          description: The car's manufacturer
+        model:
+          type: string
+          description: The car's model
+        year:
+          type: integer
+          description: The year the car was manufactured
+      description: "A car object with details about make, model, and year"
