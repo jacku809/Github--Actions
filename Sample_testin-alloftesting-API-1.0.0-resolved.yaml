@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Vehicle API
+  titl: Vehicle API
   description: API for managing a collection of vehicles
   version: 1.0.0
 servers:
